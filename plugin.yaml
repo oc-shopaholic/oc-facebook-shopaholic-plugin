@@ -1,0 +1,7 @@
+plugin:
+    name: 'lovata.facebookshopaholic::lang.plugin.name'
+    description: 'lovata.facebookshopaholic::lang.plugin.description'
+    author: Lovata
+    icon: icon-upload
+    homepage: ''
+permissions:
