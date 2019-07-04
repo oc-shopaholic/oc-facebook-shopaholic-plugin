@@ -5,3 +5,6 @@ plugin:
     icon: icon-upload
     homepage: ''
 permissions:
+    shopaholic-menu-facebook-export:
+        label: 'lovata.facebookshopaholic::lang.permission.facebooksettings'
+        tab: 'lovata.shopaholic::lang.tab.permissions'
