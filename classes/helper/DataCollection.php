@@ -274,7 +274,7 @@ class DataCollection
     public function getOfferAvailability($obOffer)
     {
         if (empty($obOffer) || !$obOffer instanceof OfferItem || $obOffer->quantity = 0) {
-            return 'discontinued';
+            return 'out of stock';
         }
 
         return 'in stock';
