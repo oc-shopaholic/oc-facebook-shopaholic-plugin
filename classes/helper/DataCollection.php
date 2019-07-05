@@ -73,6 +73,7 @@ class DataCollection
         $this->initProductListData();
 
         $obGenerateXML = new GenerateXML();
+
         $obGenerateXML->generate($this->arData);
     }
 

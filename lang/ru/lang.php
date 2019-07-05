@@ -12,7 +12,7 @@
     ],
     'field'      => [
         'code_model_for_images'                      => 'Откуда брать изображения?',
-        'path_to_export_the_file'                    => 'Путь для экспорта файла (по умолчанию app/facebook_atom.xml)',
+        'path_to_export_the_file'                    => 'Путь для экспорта файла (по умолчанию storage/app/media/facebook_atom.xml)',
         'section_management_additional_fields_offer' => 'Управление дополнительными полями',
         'property_color'                             => 'Цвет',
         'property_material'                          => 'Материал',

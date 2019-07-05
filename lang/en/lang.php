@@ -12,7 +12,7 @@
     ],
     'field'      => [
         'code_model_for_images'                      => 'Where to get the images?',
-        'path_to_export_the_file'                    => 'Path to export the file (default app/facebook_atom.xml)',
+        'path_to_export_the_file'                    => 'Path to export the file (default storage/app/media/facebook_atom.xml)',
         'section_management_additional_fields_offer' => 'Management additional fields',
         'property_color'                             => 'Color',
         'property_material'                          => 'Material',
