@@ -1,8 +1,9 @@
 <?php namespace Lovata\FacebookShopaholic\Widgets;
 
 use Flash;
-use Artisan;
 use Backend\Classes\ReportWidgetBase;
+use Lovata\FacebookShopaholic\Classes\Helper\DataCollection;
+use Lovata\FacebookShopaholic\Classes\Helper\GenerateXML;
 
 /**
  * Class ExportToXML
@@ -18,6 +19,8 @@ class ExportToXML extends ReportWidgetBase
      */
     public function render()
     {
+        $this->vars['sFileUrl'] = $this->getFileUrl();
+
         return $this->makePartial('widget');
     }
 
@@ -26,7 +29,31 @@ class ExportToXML extends ReportWidgetBase
      */
     public function onGenerateXMLForFacebook()
     {
-        Artisan::call('shopaholic:catalog_export_to_facebook');
+        $obDataCollection = new DataCollection();
+        $obDataCollection->generate();
+
         Flash::info(trans('lovata.facebookshopaholic::lang.message.export_is_complete'));
+
+        $this->vars['sFileUrl'] = $this->getFileUrl();
+    }
+
+    /**
+     * Get fie url
+     *
+     * @return string
+     */
+    protected function getFileUrl()
+    {
+        $sAppUrl = config('app.url');
+        $sMediaFilePath = GenerateXML::getMediaPath().GenerateXML::FILE_NAME;
+        $sStorageMediaFilePath = storage_path($sMediaFilePath);
+
+        if (!file_exists($sStorageMediaFilePath)) {
+            return '';
+        }
+
+        $sStorageFilePath = \Storage::url($sMediaFilePath);
+
+        return $sAppUrl.$sStorageFilePath;
     }
 }

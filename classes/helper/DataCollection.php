@@ -89,7 +89,11 @@ class DataCollection
         array_set($this->arData, 'shop.name', Config::getValue('store_name'));
         array_set($this->arData, 'shop.company', Config::getValue('store_url'));
 
-        $arEventShopData = Event::fire(self::EVENT_FACEBOOK_SHOP_DATA, [array_get($this->arData, 'shop')], true);
+        $arEventShopData = Event::fire(
+            self::EVENT_FACEBOOK_SHOP_DATA,
+            [array_get($this->arData, 'shop')],
+            true
+        );
 
         if (!empty($arEventShopData) && is_array($arEventShopData)) {
             array_set($this->arData, 'shop', $arEventShopData);
@@ -245,9 +249,13 @@ class DataCollection
      */
     protected function getOfferPreviewImage($obOffer, $obProduct)
     {
-        $sCodeModelForImages = Config::getValue('code_model_for_images');
+        $sCodeModelForImages = Config::getValue('code_model_for_images', '');
 
-        if (empty($sCodeModelForImages) || Config::CODE_OFFER == $sCodeModelForImages) {
+        if (empty($sCodeModelForImages)) {
+            return '';
+        }
+
+        if (Config::CODE_OFFER == $sCodeModelForImages) {
             $obItem = $obOffer;
         } else {
             $obItem = $obProduct;
@@ -293,10 +301,14 @@ class DataCollection
     {
         $arResult = [];
 
-        $sCodeModelForImages = Config::getValue('code_model_for_images');
+        $sCodeModelForImages = Config::getValue('code_model_for_images', '');
         $bFieldImages        = Config::getValue('field_images', false);
 
-        if (empty($sCodeModelForImages) || Config::CODE_OFFER == $sCodeModelForImages) {
+        if (empty($sCodeModelForImages)) {
+            return $arResult;
+        }
+
+        if (Config::CODE_OFFER == $sCodeModelForImages) {
             $obItem = $obOffer;
         } else {
             $obItem = $obProduct;

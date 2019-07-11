@@ -1,10 +1,10 @@
 <?php return [
     'plugin'     => [
-        'name'        => 'Экспорт каталога для Facebook',
-        'description' => 'Генерация XML файла для Facebook в формате ATOM',
+        'name'        => 'Экспорт товаров для Facebook',
+        'description' => 'Интеграция через ATOM формата',
     ],
     'menu'       => [
-        'facebooksettings' => 'Экспорт каталога для Facebook',
+        'facebooksettings' => 'Экспорт в Facebook',
     ],
     'component'  => [],
     'tab'        => [
@@ -23,15 +23,17 @@
         'section_facebook'                           => 'Facebook',
     ],
     'button'     => [
-        'export_catalog_to_xml' => 'Экспорт каталога в XML файл',
+        'export_catalog_to_xml' => 'Обновить каталог в XML файл',
+        'download'              => 'Скачать',
     ],
     'widget'     => [
         'export_catalog_to_xml_for_facebook' => 'Экспорт каталога в XML файл для Facebook',
     ],
     'permission' => [
-        'facebooksettings' => 'Управление экспортом каталога для Facebook',
+        'facebooksettings' => 'Управление экспортом для Facebook',
     ],
     'message'    => [
-        'export_is_complete' => 'Экспорт завершен',
+        'export_is_complete'            => 'Экспорт завершен',
+        'update_catalog_to_xml_confirm' => 'Обновить каталог в XML файл?',
     ],
 ];

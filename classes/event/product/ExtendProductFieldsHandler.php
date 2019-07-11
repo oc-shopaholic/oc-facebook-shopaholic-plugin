@@ -1,5 +1,6 @@
 <?php namespace Lovata\FacebookShopaholic\Classes\Event\Product;
 
+use Lovata\FacebookShopaholic\Models\FacebookSettings;
 use Lovata\Toolbox\Classes\Event\AbstractBackendFieldHandler;
 
 use Lovata\Shopaholic\Models\Product;
@@ -46,33 +47,37 @@ class ExtendProductFieldsHandler extends AbstractBackendFieldHandler
      */
     protected function addField($obWidget)
     {
-        $obWidget->addTabFields(
-            [
-                'section_facebook' => [
-                    'label' => 'lovata.facebookshopaholic::lang.field.section_facebook',
-                    'type'  => 'section',
-                    'span'  => 'full',
-                    'tab'   => 'lovata.toolbox::lang.tab.images',
-                ],
-                'preview_image_facebook'  => [
-                    'label'     => 'lovata.toolbox::lang.field.preview_image',
-                    'type'      => 'fileupload',
-                    'span'      => 'left',
-                    'required'  => true,
-                    'mode'      => 'image',
-                    'tab'       => 'lovata.toolbox::lang.tab.images',
-                    'fileTypes' => 'jpeg,png',
-                ],
-                'images_facebook'         => [
-                    'label'     => 'lovata.toolbox::lang.field.images',
-                    'type'      => 'fileupload',
-                    'span'      => 'left',
-                    'required'  => false,
-                    'mode'      => 'image',
-                    'tab'       => 'lovata.toolbox::lang.tab.images',
-                    'fileTypes' => 'jpeg,png',
-                ],
-            ]
-        );
+        $arFields = [];
+
+        $sCodeModelForImages = FacebookSettings::getValue('code_model_for_images', '');
+
+        if (!empty($sCodeModelForImages) && $sCodeModelForImages == FacebookSettings::CODE_PRODUCT) {
+            $arFields['section_facebook'] = [
+                'label' => 'lovata.facebookshopaholic::lang.field.section_facebook',
+                'type'  => 'section',
+                'span'  => 'left',
+                'tab'   => 'lovata.toolbox::lang.tab.images',
+            ];
+            $arFields['preview_image_facebook'] = [
+                'label'     => 'lovata.toolbox::lang.field.preview_image',
+                'type'      => 'fileupload',
+                'span'      => 'left',
+                'required'  => true,
+                'mode'      => 'image',
+                'tab'       => 'lovata.toolbox::lang.tab.images',
+                'fileTypes' => 'jpeg,png',
+            ];
+            $arFields['images_facebook'] = [
+                'label'     => 'lovata.toolbox::lang.field.images',
+                'type'      => 'fileupload',
+                'span'      => 'left',
+                'required'  => false,
+                'mode'      => 'image',
+                'tab'       => 'lovata.toolbox::lang.tab.images',
+                'fileTypes' => 'jpeg,png',
+            ];
+        }
+
+        $obWidget->addTabFields($arFields);
     }
 }

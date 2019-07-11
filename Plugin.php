@@ -2,7 +2,6 @@
 
 use Event;
 use System\Classes\PluginBase;
-use Lovata\FacebookShopaholic\Models\FacebookSettings;
 
 // Command
 use Lovata\FacebookShopaholic\Classes\Console\CatalogExportForFacebook;
@@ -46,17 +45,12 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
-        $sCodeModelForImages = FacebookSettings::getValue('code_model_for_images', '');
-
-        if (empty($sCodeModelForImages) || $sCodeModelForImages == FacebookSettings::CODE_OFFER) {
-            // Offer event
-            Event::subscribe(ExtendOfferFieldsHandler::class);
-            Event::subscribe(OfferModelHandler::class);
-        } else {
-            // Product event
-            Event::subscribe(ExtendProductFieldsHandler::class);
-            Event::subscribe(ProductModelHandler::class);
-        }
+        // Offer event
+        Event::subscribe(ExtendOfferFieldsHandler::class);
+        Event::subscribe(OfferModelHandler::class);
+        // Product event
+        Event::subscribe(ExtendProductFieldsHandler::class);
+        Event::subscribe(ProductModelHandler::class);
     }
 
     /**
