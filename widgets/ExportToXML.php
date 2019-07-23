@@ -1,8 +1,9 @@
 <?php namespace Lovata\FacebookShopaholic\Widgets;
 
 use Flash;
+use Storage;
 use Backend\Classes\ReportWidgetBase;
-use Lovata\FacebookShopaholic\Classes\Helper\DataCollection;
+use Lovata\FacebookShopaholic\Classes\Helper\ExportCatalogHelper;
 use Lovata\FacebookShopaholic\Classes\Helper\GenerateXML;
 
 /**
@@ -27,12 +28,12 @@ class ExportToXML extends ReportWidgetBase
     /**
      * Generate xml for facebook
      */
-    public function onGenerateXMLForFacebook()
+    public function onGenerateXMLFileFacebook()
     {
-        $obDataCollection = new DataCollection();
-        $obDataCollection->generate();
+        $obDataCollection = new ExportCatalogHelper();
+        $obDataCollection->run();
 
-        Flash::info(trans('lovata.facebookshopaholic::lang.message.export_is_complete'));
+        Flash::info(trans('lovata.facebookshopaholic::lang.message.export_is_completed'));
 
         $this->vars['sFileUrl'] = $this->getFileUrl();
     }
@@ -44,16 +45,14 @@ class ExportToXML extends ReportWidgetBase
      */
     protected function getFileUrl()
     {
-        $sAppUrl = config('app.url');
-        $sMediaFilePath = GenerateXML::getMediaPath().GenerateXML::FILE_NAME;
-        $sStorageMediaFilePath = storage_path($sMediaFilePath);
-
-        if (!file_exists($sStorageMediaFilePath)) {
-            return '';
+        $sFilePath = GenerateXML::getFilePath();
+        $sFullFilePath = storage_path($sFilePath);
+        if (!file_exists($sFullFilePath)) {
+            return null;
         }
 
-        $sStorageFilePath = \Storage::url($sMediaFilePath);
+        $sStorageFilePath = Storage::url($sFilePath);
 
-        return $sAppUrl.$sStorageFilePath;
+        return $sStorageFilePath;
     }
 }

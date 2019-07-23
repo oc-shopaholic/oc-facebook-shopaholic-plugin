@@ -2,7 +2,6 @@
 
 use File;
 use XMLWriter;
-use Lovata\FacebookShopaholic\Models\FacebookSettings as Config;
 
 /**
  * Class GenerateXML
@@ -37,15 +36,25 @@ class GenerateXML
     protected $obXMLWriter;
 
     /**
+     * Get path to file relative to storage folder
+     * @return string
+     */
+    public static function getFilePath()
+    {
+        $sResult = self::DEFAULT_DIRECTORY.self::FILE_NAME;
+
+        return $sResult;
+    }
+
+    /**
      * Generate
      *
      * @param array $arData
      */
     public function generate($arData)
     {
-        $this->arShopData   = array_get($arData, 'shop', []);
-        $this->arOffersData = array_get($arData, 'offers', []);
-
+        $this->arShopData   = (array) array_get($arData, 'shop', []);
+        $this->arOffersData = (array) array_get($arData, 'offers', []);
         if (empty($this->arShopData) || empty($this->arOffersData)) {
             return;
         }
@@ -55,31 +64,6 @@ class GenerateXML
         $this->stop();
 
         $this->save();
-    }
-
-    /**
-     * Get media path
-     *
-     * @return string
-     */
-    public static function getMediaPath()
-    {
-        $sMediaPath = self::DEFAULT_DIRECTORY;
-
-        $sFilePath = (string) Config::getValue('path_to_export_the_file' , '');
-
-        if (empty($sFilePath)) {
-            return $sMediaPath;
-        }
-
-        $sFilePath = trim($sFilePath);
-        $sFilePath = preg_replace('/^\/+/', '', $sFilePath);
-        $sFilePath = preg_replace('/\/+$/', '', $sFilePath);
-        $sFilePath = trim($sFilePath);
-        $sFilePath = preg_replace('/ +/', '', $sFilePath);
-        $sFilePath .= '/';
-
-        return $sMediaPath.$sFilePath;
     }
 
     /**
@@ -226,16 +210,13 @@ class GenerateXML
      */
     protected function save()
     {
-        $sMediaPath = self::getMediaPath();
-
+        $sMediaPath = self::getFilePath();
         $sFilePath = storage_path($sMediaPath);
 
-        if (!file_exists($sFilePath)) {
-            mkdir($sFilePath, 0777, true);
+        if (file_exists($sFilePath)) {
+            unlink($sFilePath);
         }
 
-        $sFile = $sFilePath.self::FILE_NAME;
-
-        File::put($sFile, $this->sContent);
+        File::put($sFilePath, $this->sContent);
     }
 }

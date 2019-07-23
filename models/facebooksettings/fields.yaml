@@ -1,38 +1,23 @@
 fields:
 tabs:
     icons:
-        lovata.facebookshopaholic::lang.tab.store: icon-file-text-o
-        lovata.shopaholic::lang.tab.offer: icon-file-text-o
         lovata.toolbox::lang.tab.settings: icon-cogs
+        lovata.shopaholic::lang.tab.offer: icon-briefcase
     fields:
-
-        ### Store ###
-
         store_name:
             label: 'lovata.toolbox::lang.field.name'
             type: text
             span: left
             required: 1
-            tab: 'lovata.facebookshopaholic::lang.tab.store'
+            tab: 'lovata.toolbox::lang.tab.settings'
             placeholder: 'lovata.toolbox::lang.field.name'
         store_url:
             label: 'lovata.toolbox::lang.field.slug'
             type: text
             span: left
             required: 1
-            tab: 'lovata.facebookshopaholic::lang.tab.store'
+            tab: 'lovata.toolbox::lang.tab.settings'
             placeholder: 'lovata.toolbox::lang.field.slug'
-
-        ### Offer ###
-
-        code_model_for_images:
-            label: 'lovata.facebookshopaholic::lang.field.code_model_for_images'
-            type: radio
-            span: left
-            required: 1
-            options: getWhereToGetTheImagesOptions
-            tab: 'lovata.shopaholic::lang.tab.offer'
-
         section_management_additional_fields_offer:
             label: 'lovata.facebookshopaholic::lang.field.section_management_additional_fields_offer'
             type: section
@@ -52,6 +37,14 @@ tabs:
             required: 0
             tab: 'lovata.shopaholic::lang.tab.offer'
             default: false
+        code_model_for_images:
+            label: 'lovata.facebookshopaholic::lang.field.code_model_for_images'
+            type: dropdown
+            emptyOption: 'lovata.toolbox::lang.field.empty'
+            span: left
+            required: 1
+            options: getGetImagesFromOptions
+            tab: 'lovata.shopaholic::lang.tab.offer'
         field_images:
             label: 'lovata.toolbox::lang.field.images'
             type: checkbox
@@ -82,12 +75,3 @@ tabs:
                         showSearch: true
                         required: 1
                         options: getOfferPropertiesOptions
-        ### Settings ###
-
-        path_to_export_the_file:
-            label: 'lovata.facebookshopaholic::lang.field.path_to_export_the_file'
-            type: text
-            span: left
-            required: 0
-            tab: 'lovata.toolbox::lang.tab.settings'
-            placeholder: 'lovata.facebookshopaholic::lang.field.path_to_export_the_file'

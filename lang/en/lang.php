@@ -1,19 +1,15 @@
 <?php return [
     'plugin'     => [
-        'name'        => 'Export products for Facebook',
-        'description' => 'Integration through ATOM format',
+        'name'        => 'Export catalog in Facebook',
+        'description' => 'Generation XML file for integration with Facebook',
     ],
     'menu'       => [
-        'facebooksettings' => 'Export to Facebook',
-    ],
-    'component'  => [],
-    'tab'        => [
-        'store' => 'Store',
+        'settings'             => 'Export to Facebook',
+        'settings_description' => 'Configure export catalog to Facebook',
     ],
     'field'      => [
-        'code_model_for_images'                      => 'Where to get the images?',
-        'path_to_export_the_file'                    => 'Path to export the file (default storage/app/media/facebook_atom.xml)',
-        'section_management_additional_fields_offer' => 'Management additional fields',
+        'code_model_for_images'                      => 'Get images from:',
+        'section_management_additional_fields_offer' => 'Additional fields',
         'property_color'                             => 'Color',
         'property_material'                          => 'Material',
         'property_size'                              => 'Size',
@@ -23,17 +19,17 @@
         'section_facebook'                           => 'Facebook',
     ],
     'button'     => [
-        'export_catalog_to_xml' => 'Update catalog to XML file',
+        'export_catalog_to_xml' => 'Run export',
         'download'              => 'Download',
     ],
     'widget'     => [
-        'export_catalog_to_xml_for_facebook' => 'Export catalog to XML for Facebook',
+        'export_catalog_to_xml_for_facebook' => 'Export catalog to Facebook',
     ],
     'permission' => [
-        'facebooksettings' => 'Manager export for Facebook',
+        'facebooksettings' => 'Manager settings of catalog export to Facebook',
     ],
     'message'    => [
-        'export_is_complete'            => 'Export is complete',
-        'update_catalog_to_xml_confirm' => 'Update catalog to XML file?',
+        'export_is_completed'           => 'Export is completed',
+        'update_catalog_to_xml_confirm' => 'Run export catalog to XML file?',
     ],
 ];

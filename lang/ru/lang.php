@@ -1,19 +1,15 @@
 <?php return [
     'plugin'     => [
-        'name'        => 'Экспорт товаров для Facebook',
-        'description' => 'Интеграция через ATOM формата',
+        'name'        => 'Экспорт товаров в Facebook',
+        'description' => 'Генерация XML файла для интеграции с Facebook',
     ],
     'menu'       => [
-        'facebooksettings' => 'Экспорт в Facebook',
-    ],
-    'component'  => [],
-    'tab'        => [
-        'store' => 'Магазин',
+        'settings'             => 'Экспорт в Facebook',
+        'settings_description' => 'Настройка экспорта каталога в Facebook',
     ],
     'field'      => [
-        'code_model_for_images'                      => 'Откуда брать изображения?',
-        'path_to_export_the_file'                    => 'Путь для экспорта файла (по умолчанию storage/app/media/facebook_atom.xml)',
-        'section_management_additional_fields_offer' => 'Управление дополнительными полями',
+        'code_model_for_images'                      => 'Получать изображения из:',
+        'section_management_additional_fields_offer' => 'Дополнительные поля',
         'property_color'                             => 'Цвет',
         'property_material'                          => 'Материал',
         'property_size'                              => 'Размер',
@@ -23,17 +19,17 @@
         'section_facebook'                           => 'Facebook',
     ],
     'button'     => [
-        'export_catalog_to_xml' => 'Обновить каталог в XML файл',
+        'export_catalog_to_xml' => 'Запуск экспорта',
         'download'              => 'Скачать',
     ],
     'widget'     => [
-        'export_catalog_to_xml_for_facebook' => 'Экспорт каталога в XML файл для Facebook',
+        'export_catalog_to_xml_for_facebook' => 'Экспорт каталога в Facebook',
     ],
     'permission' => [
-        'facebooksettings' => 'Управление экспортом для Facebook',
+        'facebooksettings' => 'Управление настройками экспорта для Facebook',
     ],
     'message'    => [
         'export_is_complete'            => 'Экспорт завершен',
-        'update_catalog_to_xml_confirm' => 'Обновить каталог в XML файл?',
+        'update_catalog_to_xml_confirm' => 'Запустить экспорт каталога в XML файл?',
     ],
 ];

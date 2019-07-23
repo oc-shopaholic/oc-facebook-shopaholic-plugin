@@ -1,7 +1,7 @@
 <?php namespace Lovata\FacebookShopaholic\Classes\Console;
 
 use Illuminate\Console\Command;
-use Lovata\FacebookShopaholic\Classes\Helper\DataCollection;
+use Lovata\FacebookShopaholic\Classes\Helper\ExportCatalogHelper;
 
 /**
  * Class CatalogExportForFacebook
@@ -14,12 +14,12 @@ class CatalogExportForFacebook extends Command
     /**
      * @var string command name.
      */
-    protected $name = 'shopaholic:catalog_export_to_facebook';
+    protected $name = 'shopaholic:catalog_export.facebook';
 
     /**
      * @var string The console command description.
      */
-    protected $description = 'Run catalog export to Facebook';
+    protected $description = 'Generate xml file for Facebook';
 
     /**
      * Execute the console command.
@@ -27,7 +27,7 @@ class CatalogExportForFacebook extends Command
      */
     public function handle()
     {
-        $obDataCollection = new DataCollection();
-        $obDataCollection->generate();
+        $obDataCollection = new ExportCatalogHelper();
+        $obDataCollection->run();
     }
 }

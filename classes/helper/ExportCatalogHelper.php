@@ -1,24 +1,25 @@
 <?php namespace Lovata\FacebookShopaholic\Classes\Helper;
 
 use Event;
-use Lovata\PropertiesShopaholic\Classes\Item\PropertyItem;
-use Lovata\PropertiesShopaholic\Classes\Item\PropertyValueItem;
+use System\Classes\PluginManager;
+
+use Lovata\Shopaholic\Models\Currency;
 use Lovata\Shopaholic\Classes\Collection\ProductCollection;
 use Lovata\Shopaholic\Classes\Item\OfferItem;
 use Lovata\Shopaholic\Classes\Item\ProductItem;
-use Lovata\FacebookShopaholic\Models\FacebookSettings as Config;
-use Lovata\Shopaholic\Models\Currency;
-use System\Classes\PluginManager;
+
+use Lovata\PropertiesShopaholic\Classes\Item\PropertyItem;
+use Lovata\FacebookShopaholic\Models\FacebookSettings;
 
 /**
- * Class DataCollection
+ * Class ExportCatalogHelper
  *
  * @package Lovata\FacebookShopaholic\Classes\Helper
  * @author  Sergey Zakharevich, s.zakharevich@lovata.com, LOVATA Group
  */
-class DataCollection
+class ExportCatalogHelper
 {
-    const EVENT_FACEBOOK_SHOP_DATA  = 'shopaholic.facebook.shop.data';
+    const EVENT_FACEBOOK_SHOP_DATA = 'shopaholic.facebook.shop.data';
     const EVENT_FACEBOOK_OFFER_DATA = 'shopaholic.facebook.offer.data';
 
     /**
@@ -57,7 +58,10 @@ class DataCollection
      *     ],
      * ]
      */
-    protected $arData = [];
+    protected $arData = [
+        'shop'   => [],
+        'offers' => [],
+    ];
 
     /**
      * @var Currency
@@ -65,15 +69,16 @@ class DataCollection
     protected $obDefaultCurrency;
 
     /**
-     * Generate
+     * Generate XML file
      */
-    public function generate()
+    public function run()
     {
+        //Prepare data
         $this->initShopData();
         $this->initProductListData();
 
+        //Generate XML file
         $obGenerateXML = new GenerateXML();
-
         $obGenerateXML->generate($this->arData);
     }
 
@@ -82,22 +87,24 @@ class DataCollection
      */
     protected function initShopData()
     {
-        if (!is_array($this->arData)) {
+        array_set($this->arData, 'shop.name', FacebookSettings::getValue('store_name'));
+        array_set($this->arData, 'shop.company', FacebookSettings::getValue('store_url'));
+
+        $arShopData = array_get($this->arData, 'shop');
+        $arEventData = Event::fire(self::EVENT_FACEBOOK_SHOP_DATA, [$arShopData]);
+        if (empty($arEventData)) {
             return;
         }
 
-        array_set($this->arData, 'shop.name', Config::getValue('store_name'));
-        array_set($this->arData, 'shop.company', Config::getValue('store_url'));
+        foreach ($arEventData as $arEventShopData) {
+            if (empty($arEventShopData) || !is_array($arEventShopData)) {
+                continue;
+            }
 
-        $arEventShopData = Event::fire(
-            self::EVENT_FACEBOOK_SHOP_DATA,
-            [array_get($this->arData, 'shop')],
-            true
-        );
-
-        if (!empty($arEventShopData) && is_array($arEventShopData)) {
-            array_set($this->arData, 'shop', $arEventShopData);
+            $arShopData = array_merge($arShopData, $arEventShopData);
         }
+
+        $this->arData['shop'] = $arShopData;
     }
 
     /**
@@ -105,12 +112,7 @@ class DataCollection
      */
     protected function initProductListData()
     {
-        if (!is_array($this->arData)) {
-            return;
-        }
-
         $obProductList = ProductCollection::make()->active();
-
         if ($obProductList->isEmpty()) {
             return;
         }
@@ -130,12 +132,7 @@ class DataCollection
      */
     protected function initOfferListData($obProduct)
     {
-        if (empty($obProduct) || !$obProduct instanceof ProductItem) {
-            return;
-        }
-
         $obOfferList = $obProduct->offer;
-
         if ($obOfferList->isEmpty()) {
             return;
         }
@@ -148,19 +145,17 @@ class DataCollection
     /**
      * Init offer
      *
-     * @param OfferItem $obOffer
+     * @param OfferItem   $obOffer
      * @param ProductItem $obProduct
      */
     protected function initOffer($obOffer, $obProduct)
     {
-        $bOffer   = empty($obOffer) || !$obOffer instanceof OfferItem;
-        $bProduct = empty($obProduct) || !$obProduct instanceof ProductItem;
-        if ($bOffer || $bProduct || !is_array($this->arData) || empty($this->obDefaultCurrency)) {
-            return;
+        $sPrice = $obOffer->price;
+        if (!empty($this->obDefaultCurrency)) {
+            $sPrice .= ' '.$this->obDefaultCurrency->code;
         }
 
-        $arOfferList = array_pull($this->arData, 'offers', []);
-        $arOffer = [
+        $arOfferData = [
             'id'            => $obOffer->id,
             'availability'  => $this->getOfferAvailability($obOffer),
             'condition'     => 'new',
@@ -169,22 +164,25 @@ class DataCollection
             'images'        => $this->getOfferImages($obOffer, $obProduct),
             'url'           => $obProduct->getPageUrl(),
             'name'          => $obOffer->name,
-            'price'         => $obOffer->price.' '.$this->obDefaultCurrency->code,
+            'price'         => $sPrice,
             'product_type'  => $this->getOfferCategory($obProduct),
             'brand_name'    => $this->getBrandName($obProduct),
             'old_price'     => $this->getOfferOldPrice($obOffer),
             'properties'    => $this->getOfferProperties($obOffer),
         ];
 
-        $arEventOfferData = Event::fire(self::EVENT_FACEBOOK_OFFER_DATA, [$arOffer], true);
+        $arEventData = Event::fire(self::EVENT_FACEBOOK_OFFER_DATA, [$arOfferData]);
+        if (!empty($arEventData)) {
+            foreach ($arEventData as $arEventOfferData) {
+                if (empty($arEventOfferData) || !is_array($arEventOfferData)) {
+                    continue;
+                }
 
-        if (!empty($arEventOfferData) && is_array($arEventOfferData)) {
-            $arOffer = $arEventOfferData;
+                $arOfferData = array_merge($arOfferData, $arEventOfferData);
+            }
         }
 
-        $arOfferList[] = $arOffer;
-
-        array_set($this->arData, 'offers', $arOfferList);
+        $this->arData['offers'][] = $arOfferData;
     }
 
     /**
@@ -195,14 +193,19 @@ class DataCollection
      */
     protected function getOfferOldPrice($obOffer)
     {
-        $bFieldOldPrice = Config::getValue('field_old_price', false);
-
-        if (!$bFieldOldPrice || !$obOffer instanceof OfferItem || $obOffer->old_price == 0) {
+        $bFieldOldPrice = FacebookSettings::getValue('field_old_price', false);
+        if (!$bFieldOldPrice || $obOffer->old_price_value == 0) {
             return '';
         }
 
-        return $obOffer->old_price.' '.$this->obDefaultCurrency->code;
+        $sResult = $obOffer->old_price;
+        if (!empty($this->obDefaultCurrency)) {
+            $sResult .= ' '.$this->obDefaultCurrency->code;
+        }
+
+        return $sResult;
     }
+
     /**
      * Get brand name
      *
@@ -211,9 +214,8 @@ class DataCollection
      */
     protected function getBrandName($obProduct)
     {
-        $bFieldBrand = Config::getValue('field_brand', false);
-
-        if (!$bFieldBrand || !$obProduct instanceof ProductItem || $obProduct->brand->isEmpty()) {
+        $bFieldBrand = FacebookSettings::getValue('field_brand', false);
+        if (!$bFieldBrand || $obProduct->brand->isEmpty()) {
             return '';
         }
 
@@ -228,7 +230,7 @@ class DataCollection
      */
     protected function getOfferCategory($obProduct)
     {
-        if (empty($obProduct) || !$obProduct instanceof ProductItem || empty($obProduct->category)) {
+        if ($obProduct->category->isEmpty()) {
             return '';
         }
 
@@ -242,36 +244,29 @@ class DataCollection
     /**
      * Get offer preview image
      *
-     * @param OfferItem|OfferItem $obOffer
-     * @param OfferItem|ProductItem $obProduct
+     * @param OfferItem   $obOffer
+     * @param ProductItem $obProduct
      *
      * @return string
      */
     protected function getOfferPreviewImage($obOffer, $obProduct)
     {
-        $sCodeModelForImages = Config::getValue('code_model_for_images', '');
-
+        $sCodeModelForImages = FacebookSettings::getValue('code_model_for_images', '');
         if (empty($sCodeModelForImages)) {
             return '';
         }
 
-        if (Config::CODE_OFFER == $sCodeModelForImages) {
+        if (FacebookSettings::CODE_OFFER == $sCodeModelForImages) {
             $obItem = $obOffer;
         } else {
             $obItem = $obProduct;
         }
 
-        if (empty($obItem) || (!$obItem instanceof OfferItem && !$obItem instanceof ProductItem)) {
+        if (empty($obItem->preview_image_facebook)) {
             return '';
         }
 
-        $obModel = $obItem->getObject();
-
-        if (empty($obModel) || empty($obModel->preview_image_facebook)) {
-            return '';
-        }
-
-        return $obModel->preview_image_facebook->path;
+        return $obItem->preview_image_facebook->getPath();
     }
 
     /**
@@ -282,17 +277,15 @@ class DataCollection
      */
     public function getOfferAvailability($obOffer)
     {
-        if (empty($obOffer) || !$obOffer instanceof OfferItem || $obOffer->quantity = 0) {
-            return 'out of stock';
-        }
+        $sResult = $obOffer->quantity = 0 ? 'out of stock' : 'in stock';
 
-        return 'in stock';
+        return $sResult;
     }
 
     /**
      * Get offer images
      *
-     * @param OfferItem|OfferItem $obOffer
+     * @param OfferItem|OfferItem   $obOffer
      * @param OfferItem|ProductItem $obProduct
      *
      * @return array
@@ -301,31 +294,24 @@ class DataCollection
     {
         $arResult = [];
 
-        $sCodeModelForImages = Config::getValue('code_model_for_images', '');
-        $bFieldImages        = Config::getValue('field_images', false);
-
-        if (empty($sCodeModelForImages)) {
+        $sCodeModelForImages = FacebookSettings::getValue('code_model_for_images', '');
+        $bFieldImages = FacebookSettings::getValue('field_images', false);
+        if (empty($sCodeModelForImages) || !$bFieldImages) {
             return $arResult;
         }
 
-        if (Config::CODE_OFFER == $sCodeModelForImages) {
+        if (FacebookSettings::CODE_OFFER == $sCodeModelForImages) {
             $obItem = $obOffer;
         } else {
             $obItem = $obProduct;
         }
 
-        if (!$bFieldImages || empty($obItem) || (!$obItem instanceof OfferItem && !$obItem instanceof ProductItem)) {
+        if ($obItem->images_facebook->isEmpty()) {
             return $arResult;
         }
 
-        $obModel = $obItem->getObject();
-
-        if (empty($obModel) || $obModel->images_facebook->isEmpty()) {
-            return $arResult;
-        }
-
-        foreach ($obModel->images_facebook as $obImage) {
-            $arResult[] = $obImage->path;
+        foreach ($obItem->images_facebook as $obImage) {
+            $arResult[] = $obImage->getPath();
         }
 
         return $arResult;
@@ -340,20 +326,17 @@ class DataCollection
     protected function getOfferProperties($obOffer)
     {
         $arResult = [];
-
         $bHasPlugin = PluginManager::instance()->hasPlugin('Lovata.PropertiesShopaholic');
-
-        if (!$bHasPlugin || empty($obOffer) || !$obOffer instanceof OfferItem) {
+        if (!$bHasPlugin) {
             return $arResult;
         }
 
         $obPropertyList = $obOffer->property;
-
-        if ($obPropertyList->isEmpty()) {
+        $arPropertyRatio = (array) FacebookSettings::getValue('field_offer_properties', []);
+        if ($obPropertyList->isEmpty() || empty($arPropertyRatio)) {
             return $arResult;
         }
 
-        $arPropertyRatio = Config::getValue('field_offer_properties', []);
 
         /** @var PropertyItem $obPropertyItem */
         foreach ($obPropertyList as $obPropertyItem) {
@@ -361,15 +344,7 @@ class DataCollection
                 continue;
             }
 
-            /** @var PropertyValueItem $obPropertyValueItem */
-            $obPropertyValueItem = $obPropertyItem->property_value->first();
-
-            if ($obPropertyValueItem->isEmpty()) {
-                continue;
-            }
-
-            $arProperty = $this->getProperty($obPropertyItem, $obPropertyValueItem, $arPropertyRatio);
-
+            $arProperty = $this->getProperty($obPropertyItem, $arPropertyRatio);
             if (!empty($arProperty)) {
                 $arResult[] = $arProperty;
             }
@@ -381,29 +356,21 @@ class DataCollection
     /**
      * Get property
      *
-     * @param PropertyItem $obPropertyItem
-     * @param PropertyValueItem $obPropertyValueItem
+     * @param PropertyItem      $obPropertyItem
+     * @param array             $arPropertyRatio
      *
      * @return array
      */
-    public function getProperty($obPropertyItem, $obPropertyValueItem, $arPropertyRatio)
+    protected function getProperty($obPropertyItem, $arPropertyRatio)
     {
-        $bPropertyItem      = empty($obPropertyItem) || !$obPropertyItem instanceof PropertyItem;
-        $bPropertyValueItem = empty($obPropertyValueItem) || !$obPropertyValueItem instanceof PropertyValueItem;
-
-        if ($bPropertyItem || $bPropertyValueItem || empty($arPropertyRatio) || !is_array($arPropertyRatio)) {
-            return [];
-        }
-
         foreach ($arPropertyRatio as $arRation) {
             $sPropertyCode = array_get($arRation, 'facebook_property_code', null);
             $iPropertyId = array_get($arRation, 'property_id', null);
-
             if (empty($iPropertyId) || empty($sPropertyCode) || $obPropertyItem->id != $iPropertyId) {
                 continue;
             }
 
-            return [$sPropertyCode => $obPropertyValueItem->value];
+            return [$sPropertyCode => $obPropertyItem->property_value->getValueString()];
         }
 
         return [];

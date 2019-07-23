@@ -1,9 +1,10 @@
 <?php namespace Lovata\FacebookShopaholic\Models;
 
+use Lang;
+use System\Classes\PluginManager;
 use October\Rain\Database\Traits\Validation;
 
 use Lovata\Toolbox\Models\CommonSettings;
-use System\Classes\PluginManager;
 
 /**
  * Class FacebookSettings
@@ -54,11 +55,11 @@ class FacebookSettings extends CommonSettings
      *
      * @return array
      */
-    public function getWhereToGetTheImagesOptions()
+    public function getGetImagesFromOptions()
     {
         return [
-            self::CODE_OFFER   => trans('lovata.shopaholic::lang.field.offer'),
-            self::CODE_PRODUCT => trans('lovata.toolbox::lang.field.product'),
+            self::CODE_OFFER   => Lang::get('lovata.shopaholic::lang.field.offer'),
+            self::CODE_PRODUCT => Lang::get('lovata.toolbox::lang.field.product'),
         ];
     }
 
@@ -86,9 +87,9 @@ class FacebookSettings extends CommonSettings
     public function getFacebookPropertiesOptions()
     {
         return [
-            self::FACEBOOK_PROPERTY_COLOR    => trans('lovata.facebookshopaholic::lang.field.property_color'),
-            self::FACEBOOK_PROPERTY_MATERIAL => trans('lovata.facebookshopaholic::lang.field.property_material'),
-            self::FACEBOOK_PROPERTY_SIZE     => trans('lovata.facebookshopaholic::lang.field.property_size'),
+            self::FACEBOOK_PROPERTY_COLOR    => Lang::get('lovata.facebookshopaholic::lang.field.property_color'),
+            self::FACEBOOK_PROPERTY_MATERIAL => Lang::get('lovata.facebookshopaholic::lang.field.property_material'),
+            self::FACEBOOK_PROPERTY_SIZE     => Lang::get('lovata.facebookshopaholic::lang.field.property_size'),
         ];
     }
 }

@@ -29,8 +29,8 @@ class Plugin extends PluginBase
     {
         return [
             'config'    => [
-                'label'       => 'lovata.facebookshopaholic::lang.menu.facebooksettings',
-                'description' => '',
+                'label'       => 'lovata.facebookshopaholic::lang.menu.settings',
+                'description' => 'lovata.facebookshopaholic::lang.menu.settings_description',
                 'category'    => 'lovata.shopaholic::lang.tab.settings',
                 'icon'        => 'icon-upload',
                 'class'       => 'Lovata\FacebookShopaholic\Models\FacebookSettings',
@@ -58,7 +58,7 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-        $this->registerConsoleCommand('shopaholic:catalog_export_to_facebook', CatalogExportForFacebook::class);
+        $this->registerConsoleCommand('shopaholic:catalog_export.facebook', CatalogExportForFacebook::class);
     }
 
     /**
