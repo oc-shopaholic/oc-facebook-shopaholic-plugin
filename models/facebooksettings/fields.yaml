@@ -1,0 +1,77 @@
+fields:
+tabs:
+    icons:
+        lovata.toolbox::lang.tab.settings: icon-cogs
+        lovata.shopaholic::lang.tab.offer: icon-briefcase
+    fields:
+        store_name:
+            label: 'lovata.toolbox::lang.field.name'
+            type: text
+            span: left
+            required: 1
+            tab: 'lovata.toolbox::lang.tab.settings'
+            placeholder: 'lovata.toolbox::lang.field.name'
+        store_url:
+            label: 'lovata.toolbox::lang.field.slug'
+            type: text
+            span: left
+            required: 1
+            tab: 'lovata.toolbox::lang.tab.settings'
+            placeholder: 'lovata.toolbox::lang.field.slug'
+        section_management_additional_fields_offer:
+            label: 'lovata.facebookshopaholic::lang.field.section_management_additional_fields_offer'
+            type: section
+            span: left
+            tab: 'lovata.shopaholic::lang.tab.offer'
+        field_brand:
+            label: 'lovata.shopaholic::lang.field.brand'
+            type: checkbox
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            default: false
+        field_old_price:
+            label: 'lovata.shopaholic::lang.field.old_price'
+            type: checkbox
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            default: false
+        code_model_for_images:
+            label: 'lovata.facebookshopaholic::lang.field.code_model_for_images'
+            type: dropdown
+            emptyOption: 'lovata.toolbox::lang.field.empty'
+            span: left
+            required: 1
+            options: getGetImagesFromOptions
+            tab: 'lovata.shopaholic::lang.tab.offer'
+        field_images:
+            label: 'lovata.toolbox::lang.field.images'
+            type: checkbox
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            default: false
+        field_offer_properties:
+            label: 'lovata.facebookshopaholic::lang.field.field_offer_properties'
+            type: repeater
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            maxItems: 3
+            form:
+                fields:
+                    facebook_property_code:
+                        label: 'lovata.facebookshopaholic::lang.field.facebook_property'
+                        type: dropdown
+                        span: left
+                        showSearch: false
+                        required: 1
+                        options: getFacebookPropertiesOptions
+                    property_id:
+                        label: 'lovata.facebookshopaholic::lang.field.shopaholic_property'
+                        type: dropdown
+                        span: right
+                        showSearch: true
+                        required: 1
+                        options: getOfferPropertiesOptions
