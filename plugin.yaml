@@ -2,6 +2,9 @@ plugin:
     name: 'lovata.facebookshopaholic::lang.plugin.name'
     description: 'lovata.facebookshopaholic::lang.plugin.description'
     author: Lovata
-    icon: icon-upload
+    icon: icon-facebook-official
     homepage: ''
 permissions:
+    shopaholic-menu-facebook-export:
+        label: 'lovata.facebookshopaholic::lang.permission.facebooksettings'
+        tab: 'lovata.shopaholic::lang.tab.permissions'
