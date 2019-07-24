@@ -17,6 +17,9 @@ class ProductModelHandler
     {
         Product::extend(function ($obProduct) {
             /** @var Product $obProduct */
+            $obProduct->fillable[] = 'preview_image_facebook';
+            $obProduct->fillable[] = 'images_facebook';
+
             $obProduct->attachOne['preview_image_facebook'] = 'System\Models\File';
             $obProduct->attachMany['images_facebook'] = 'System\Models\File';
 

@@ -42,7 +42,6 @@ tabs:
             type: dropdown
             emptyOption: 'lovata.toolbox::lang.field.empty'
             span: left
-            required: 1
             options: getGetImagesFromOptions
             tab: 'lovata.shopaholic::lang.tab.offer'
         field_images:
