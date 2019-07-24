@@ -17,6 +17,9 @@ class OfferModelHandler
     {
         Offer::extend(function ($obOffer) {
             /** @var Offer $obOffer */
+            $obOffer->fillable[] = 'preview_image_facebook';
+            $obOffer->fillable[] = 'images_facebook';
+
             $obOffer->attachOne['preview_image_facebook'] = 'System\Models\File';
             $obOffer->attachMany['images_facebook'] = 'System\Models\File';
 

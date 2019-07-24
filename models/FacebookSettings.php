@@ -38,16 +38,16 @@ class FacebookSettings extends CommonSettings
      * @var array
      */
     public $rules = [
-        'name' => 'required',
-        'url'  => 'required',
+        'store_name' => 'required',
+        'store_url'  => 'required',
     ];
 
     /**
      * @var array
      */
     public $attributeNames = [
-        'name' => 'lovata.toolbox::lang.field.name',
-        'url'  => 'lovata.toolbox::lang.field.url',
+        'store_name' => 'lovata.toolbox::lang.field.name',
+        'store_url'  => 'lovata.toolbox::lang.field.url',
     ];
 
     /**

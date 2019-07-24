@@ -36,7 +36,7 @@ class ExtendProductFieldsHandler extends AbstractBackendFieldHandler
                 'label'     => 'lovata.toolbox::lang.field.preview_image',
                 'tab'       => 'lovata.toolbox::lang.tab.images',
                 'type'      => 'fileupload',
-                'span'      => 'full',
+                'span'      => 'left',
                 'required'  => true,
                 'mode'      => 'image',
                 'fileTypes' => 'jpeg,png',
@@ -44,7 +44,7 @@ class ExtendProductFieldsHandler extends AbstractBackendFieldHandler
             'images_facebook' => [
                 'label'     => 'lovata.toolbox::lang.field.images',
                 'type'      => 'fileupload',
-                'span'      => 'full',
+                'span'      => 'left',
                 'required'  => false,
                 'mode'      => 'image',
                 'tab'       => 'lovata.toolbox::lang.tab.images',
