@@ -74,7 +74,7 @@ class FacebookSettings extends CommonSettings
             return [];
         }
 
-        $arPropertyList = \Lovata\PropertiesShopaholic\Models\Property::lists('name', 'id');
+        $arPropertyList = \Lovata\PropertiesShopaholic\Models\Property::pluck('name', 'id')->all();
 
         return $arPropertyList;
     }
